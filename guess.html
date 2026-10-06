@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body class="bg-[url('https://w.wallhaven.cc/full/eo/wallhaven-eovx8k.png')] bg-no-repeat bg-cover bg-center">
+    <div id="app">
+        <div class="flex justify-center mt-10">
+            <div>
+                <div>
+                    <h1 class="text-5xl text-center mb-5">
+                        {{display.join(" ")}}
+                    </h1>
+                </div>
+                <div v-for="(row, i) in letters" :key="i" class="flex justify-center gap-3 mb-3">
+                    <div v-for="letter in row" :key="letter" @click="press(letter)" :class="['border rounded-xl text-3xl duration-200 p-5', 
+                    usedLetters.includes(letter)
+                    ? 'bg-amber-200 cursor-not-allowed opacity-50'
+                    : 'bg-a-300 cursor-pointer'
+                    
+                ]">
+                        {{letter}}
+                    </div>
+
+                </div>
+                <div>
+                    <button @click="resetGame"
+                        class="bg-blue-500 text-white font-bold py-2 px-2 rounded-xl">Restart</button>
+                </div>
+                <div>
+                    <h1 class="font-bold text-amber-500 text-2xl">{{message}}</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    letters: [
+                        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+                        ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+                        ["Z", "X", "C", "V", "B", "N", "M"]
+
+                    ],
+                    display: ["_", "_", "_", "_", "_"],
+                    words: ["IGITS", "TIGER", "COLOR", "APPLE", "MELON"],
+                    usedLetters: [],
+                    randomValue: "",
+                    message: "",
+
+                }
+            },
+
+            methods: {
+                randomWords() {
+                    let random = Math.floor(Math.random() * this.words.length);
+                    return this.words[random];
+                },
+                press(letter) {
+                    if (this.usedLetters.includes(letter)) return
+                    this.usedLetters.push(letter);
+                    for (let i = 0; i < this.randomValue.length; i++) {
+                        if (this.randomValue[i] === letter) {
+                            this.display[i] = letter;
+                        }
+                    }
+                    this.isWinner();
+
+                },
+
+                isWinner() {
+                    if (this.display.join("") === this.randomValue) {
+                        this.message = 'PALDO!'
+                    }
+                },
+
+                resetGame() {
+                    this.display = ["_", "_", "_", "_", "_"];
+                    this.usedLetters = [];
+                    this.message = "";
+
+                }
+            },
+            mounted() {
+                this.randomValue = this.randomWords();
+                console.log(this.randomValue);
+            }
+
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
